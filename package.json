@@ -1,0 +1,23 @@
+{
+  "name": "apigee-link-usage-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "influx_basic_client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apigee-internal/apigee-link-usage-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apigee-internal/apigee-link-usage-api/issues"
+  },
+  "homepage": "https://github.com/apigee-internal/apigee-link-usage-api#readme",
+  "dependencies": {
+    "argo-formatter-siren": "0.0.0",
+    "titan": "^1.1.0"
+  }
+}
