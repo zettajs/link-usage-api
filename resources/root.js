@@ -85,29 +85,42 @@ Root.prototype.root = function(env, next) {
   
   influxClient.query(this.influxOpts, 'linkusage', [query1, query2, query3], function(err, results) {
     var mappings = {};
+    mappings.tenants = {};
+    mappings.totals = {};
+    mappings.startDate = startDate;
+    mappings.endDate = endDate;
     results.forEach(function(queryResult) {
       queryResult.forEach(function(result) {
-        if (!mappings[result.tags.tenantId]) {
-          mappings[result.tags.tenantId] = {
+        if (!mappings.tenants[result.tags.tenantId]) {
+          mappings.tenants[result.tags.tenantId] = {
             tenantId: result.tags.tenantId,
             values: {}
           };
         }
-        var groupObj = mappings[result.tags.tenantId];
+        var groupObj = mappings.tenants[result.tags.tenantId];
         
         result.values.forEach(function(entry) {
+          
           if (!groupObj.values[entry.time]) {
             groupObj.values[entry.time] = {};
           }
+
+
           
           groupObj.values[entry.time][KEY_MAPS[result.name]] = entry.sum;
+
+          if (!mappings.totals.hasOwnProperty(KEY_MAPS[result.name])) {
+            mappings.totals[KEY_MAPS[result.name]] = 0;
+          }
+          
+          mappings.totals[KEY_MAPS[result.name]] += entry.sum;
         });
       });       
     });
 
 
     
-    
+    env.format.render('root', {env: env, mappings: mappings}); 
     env.response.statusCode = 200;
     return next(env);
   });

@@ -99,9 +99,9 @@ exports.query = function(influxOpts, db, query, cb) {
       var queryResults = buf.results;
       queryResults.forEach(function(item, idx) {
         var keys = Object.keys(item);
+        var subqueryResults = [];
         if(keys && keys.length) {
 
-          var subqueryResults = [];
           item.series.forEach(function(sub) {
             var columns = sub.columns;
             var mappedResults = sub.values.map(function(item) {
