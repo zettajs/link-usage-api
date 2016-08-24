@@ -14,5 +14,5 @@ titan()
   .logger()
   .format({ engines: [siren], override: { 'application/json': siren } })
   .add(RootResource, influxHost, influxUsername, influxPassword)
-//  .add(TenantsResource, influxHost, influxUsername, influxPassword)
+  .add(TenantsResource, influxHost, influxUsername, influxPassword)
   .listen(port);
