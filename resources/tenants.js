@@ -137,6 +137,12 @@ Tenant.prototype.list = function(env, next) {
       });
     });
 
+    var acceptHeader = env.request.headers['accept'];
+
+    if(acceptHeader == 'text/csv') {
+      env.response.setHeader('Content-Type', 'text/csv');
+    }
+    
     env.format.render('tenant', {env: env, mappings: mappings});
     env.response.statusCode = 200;
     next(env);
