@@ -83,12 +83,12 @@ Root.prototype.root = function(env, next) {
   }
 
 
+  var stack = process.env.ZETTA_STACK;
+  var query1 = 'SELECT SUM(total) FROM hub_http_count WHERE link_stack = \''+stack+'\' AND time >= \''+startDate+'\' AND time <= \''+endDate+'\' GROUP BY \"tenantId\", time(1d) fill(0)';
 
-  var query1 = 'SELECT SUM(total) FROM hub_http_count WHERE link_stack = \'v1-staging\' AND time >= \'2016-08-01T00:00:00Z\' AND time <= \'2016-08-16T00:00:00Z\' GROUP BY \"tenantId\", time(1d) fill(0)';
+  var query2 = 'SELECT SUM(total) FROM hub_messages_bytes WHERE link_stack = \''+stack+'\' AND time >= \''+startDate+'\' AND time <= \''+endDate+'\' GROUP BY \"tenantId\", time(1d) fill(0)';
 
-  var query2 = 'SELECT SUM(total) FROM hub_messages_bytes WHERE link_stack = \'v1-staging\' AND time >= \'2016-08-01T00:00:00Z\' AND time <= \'2016-08-16T00:00:00Z\' GROUP BY \"tenantId\", time(1d) fill(0)';
-
-  var query3 = 'SELECT SUM(total) FROM hub_messages_count WHERE link_stack = \'v1-staging\' AND time >= \'2016-08-01T00:00:00Z\' AND time <= \'2016-08-16T00:00:00Z\' GROUP BY \"tenantId\", time(1d) fill(0)';
+  var query3 = 'SELECT SUM(total) FROM hub_messages_count WHERE link_stack = \''+stack+'\' AND time >= \''+startDate+'\' AND time <= \''+endDate+'\' GROUP BY \"tenantId\", time(1d) fill(0)';
 
   influxClient.query(this.influxOpts, 'linkusage', [query1, query2, query3], function(err, results) {
     var mappings = {};

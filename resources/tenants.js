@@ -76,11 +76,12 @@ Tenant.prototype.list = function(env, next) {
     custom = true;
   }
 
-  var query1 = 'SELECT SUM(total) FROM hub_http_count WHERE link_stack = \'v1-staging\' AND tenantId=\'default\' AND time >= \'2016-08-01T00:00:00Z\' AND time <= \'2016-08-16T00:00:00Z\' GROUP BY \"targetName\", time(1d) fill(0)';
+  var stack = process.env.ZETTA_STACK;
+  var query1 = 'SELECT SUM(total) FROM hub_http_count WHERE link_stack = \''+stack+'\' AND tenantId=\''+tenantId+'\' AND time >= \''+ startDate +'\' AND time <= \''+ endDate +'\' GROUP BY \"targetName\", time(1d) fill(0)';
 
-  var query2 = 'SELECT SUM(total) FROM hub_messages_bytes WHERE link_stack = \'v1-staging\' AND tenantId=\'default\' AND time >= \'2016-08-01T00:00:00Z\' AND time <= \'2016-08-16T00:00:00Z\' GROUP BY \"targetName\", time(1d) fill(0)';
+  var query2 = 'SELECT SUM(total) FROM hub_messages_bytes WHERE link_stack = \''+stack+'\' AND tenantId=\''+tenantId+'\' AND time >= \''+ startDate +'\' AND time <= \''+ endDate +'\' GROUP BY \"targetName\", time(1d) fill(0)';
 
-  var query3 = 'SELECT SUM(total) FROM hub_messages_count WHERE link_stack = \'v1-staging\' AND tenantId=\'default\' AND time >= \'2016-08-01T00:00:00Z\' AND time <= \'2016-08-16T00:00:00Z\' GROUP BY \"targetName\", time(1d) fill(0)';
+  var query3 = 'SELECT SUM(total) FROM hub_messages_count WHERE link_stack = \''+stack+'\' AND tenantId=\''+tenantId+'\' AND time >= \''+ startDate +'\' AND time <= \''+ endDate +'\' GROUP BY \"targetName\", time(1d) fill(0)';
 
   influxClient.query(this.influxOpts, 'linkusage', [query1, query2, query3], function(err, results) {
 
@@ -142,7 +143,7 @@ Tenant.prototype.list = function(env, next) {
     if(acceptHeader == 'text/csv') {
       env.response.setHeader('Content-Type', 'text/csv');
     }
-    
+
     env.format.render('tenant', {env: env, mappings: mappings});
     env.response.statusCode = 200;
     next(env);
