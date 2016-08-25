@@ -18,6 +18,7 @@
   "homepage": "https://github.com/apigee-internal/apigee-link-usage-api#readme",
   "dependencies": {
     "argo-formatter-siren": "0.0.0",
+    "csv-stringify": "^1.0.4",
     "titan": "^1.1.0"
   }
 }

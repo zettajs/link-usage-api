@@ -2,16 +2,21 @@ module.exports = function(model) {
   var env = model.env;
   var mappings = model.mappings;
 
+  var c = 'tenant';
+  if(mappings.custom) {
+    c = 'custom';
+  }
 
   var root = {
-    class: ['tenant'],
+    class: [c],
     properties: {
       tenantId: mappings.tenantId,
       httpCount: mappings.totals.httpCount,
       messagesBytes: mappings.totals.messagesBytes,
       messagesCount: mappings.totals.messagesCount,
       startDate: mappings.startDate,
-      endDate: mappings.endDate
+      endDate: mappings.endDate,
+      aggregation: mappings.aggregation
     },
     entities: [],
     actions: [
@@ -74,7 +79,7 @@ function formatEntity(target, env, tenantId) {
   Object.keys(target.values).forEach(function(key) {
     var values = target.values[key];
     data.push({
-      date: key,
+      date: values.date,
       httpCount: values.httpCount,
       messagesBytes: values.messagesBytes,
       messagesCount: values.messagesCount,

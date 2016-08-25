@@ -46,10 +46,10 @@ Tenant.prototype._processDate = function(date) {
 
 Tenant.prototype.list = function(env, next) {
   var tenantId = env.route.params.id;
-  var aggregation = env.route.query.aggregation || 'month';
-
+  var aggregation = env.route.query.aggregation || 'day';
   var startDate = env.route.query.startDate;
   var endDate = env.route.query.endDate;
+  var custom = false;
 
   if (startDate && !endDate || endDate && !startDate) {
     env.response.body = 'Must supply startDate and endDate.';
@@ -64,11 +64,16 @@ Tenant.prototype.list = function(env, next) {
   } else {
     startDate = this._processDate(startDate);
     endDate = this._processDate(endDate);
+    custom = true;
     if (startDate === NaN || endDate === NaN) {
       env.response.body = 'Invalid date.';
       env.response.statusCode = 400;
       return next(env);
     }
+  }
+
+  if(aggregation == 'month') {
+    custom = true;
   }
 
   var query1 = 'SELECT SUM(total) FROM hub_http_count WHERE link_stack = \'v1-staging\' AND tenantId=\'default\' AND time >= \'2016-08-01T00:00:00Z\' AND time <= \'2016-08-16T00:00:00Z\' GROUP BY \"targetName\", time(1d) fill(0)';
@@ -84,6 +89,8 @@ Tenant.prototype.list = function(env, next) {
     mappings.totals = {};
     mappings.startDate = startDate;
     mappings.endDate = endDate;
+    mappings.custom = custom;
+    mappings.aggregation = aggregation;
     mappings.tenantId = env.route.params.id;
     results.forEach(function(queryResult) {
       queryResult.forEach(function(result) {
@@ -96,12 +103,30 @@ Tenant.prototype.list = function(env, next) {
         var groupObj = mappings.targets[result.tags.targetName];
 
         result.values.forEach(function(entry) {
+          if (aggregation == 'month') {
+            var time = entry.time;
+            var parsedTime = new Date(time);
+            //Date parsing here is a bit weird. We correct for times being parsed as GMT back to their local timezone.
+            parsedTime.setTime(parsedTime.getTime() + parsedTime.getTimezoneOffset() * 60 * 1000)
+            var month = parsedTime.getMonth() + 1;
+            if (!groupObj.values[month]) {
+              groupObj.values[month] = {
+                date: time
+              };
+            }
 
-          if (!groupObj.values[entry.time]) {
-            groupObj.values[entry.time] = {};
+            if (!groupObj.values[month].hasOwnProperty(KEY_MAPS[result.name])) {
+              groupObj.values[month][KEY_MAPS[result.name]] = 0;
+            }
+
+            groupObj.values[month][KEY_MAPS[result.name]] += entry.sum;
+          } else {
+            if (!groupObj.values[entry.time]) {
+              groupObj.values[entry.time] = {};
+            }
+
+            groupObj.values[entry.time][KEY_MAPS[result.name]] = entry.sum;
           }
-
-          groupObj.values[entry.time][KEY_MAPS[result.name]] = entry.sum;
 
           if (!mappings.totals.hasOwnProperty(KEY_MAPS[result.name])) {
             mappings.totals[KEY_MAPS[result.name]] = 0;

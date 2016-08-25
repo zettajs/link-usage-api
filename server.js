@@ -1,5 +1,6 @@
 var titan = require('titan');
 var siren = require('argo-formatter-siren');
+var csv = require('./formats/csv_formatter.js');
 var RootResource = require('./resources/root');
 var TenantsResource = require('./resources/tenants');
 
@@ -12,7 +13,7 @@ titan()
   .allow('*')
   .compress()
   .logger()
-  .format({ engines: [siren], override: { 'application/json': siren } })
+  .format({ engines: [siren, csv], override: { 'application/json': siren } })
   .add(RootResource, influxHost, influxUsername, influxPassword)
   .add(TenantsResource, influxHost, influxUsername, influxPassword)
   .listen(port);

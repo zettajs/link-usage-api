@@ -1,22 +1,27 @@
 module.exports = function(model) {
   var env = model.env;
   var mappings = model.mappings;
-  
 
+  var c = 'root';
+  if(mappings.custom) {
+    c = 'custom';
+  }
+  
   var root = {
-    class: ['root'],
+    class: [c],
     properties: {
       httpCount: mappings.totals.httpCount,
       messagesBytes: mappings.totals.messagesBytes,
       messagesCount: mappings.totals.messagesCount,
       startDate: mappings.startDate,
-      endDate: mappings.endDate
+      endDate: mappings.endDate,
+      aggregation: mappings.aggregation
     },
     entities: [],
     actions: [
       {
         name: 'query',
-        href: env.helpers.url.current(),
+        href: env.helpers.url.path('/'),
         method: 'GET',
         type: 'application/x-www-form-urlencoded',
         fields: [
@@ -37,11 +42,11 @@ module.exports = function(model) {
               },
               {
                 value: 'day'
-              }  
+              }
             ]
-          }  
+          }
         ]
-      }  
+      }
     ],
     links: [
       {
@@ -59,7 +64,7 @@ module.exports = function(model) {
   var tenantTotals = [];
   Object.keys(mappings.tenants).forEach(function(tenantKey) {
     var tenant = mappings.tenants[tenantKey];
-    tenantTotals.push(formatEntity(tenant, env)); 
+    tenantTotals.push(formatEntity(tenant, env));
   });
 
   root.entities = tenantTotals;
@@ -69,15 +74,15 @@ module.exports = function(model) {
 
 function formatEntity(tenant, env) {
   var data = [];
-  
+
   Object.keys(tenant.values).forEach(function(key) {
     var values = tenant.values[key];
     data.push({
-      date: key,
+      date: values.date,
       httpCount: values.httpCount,
       messagesBytes: values.messagesBytes,
       messagesCount: values.messagesCount,
-    })
+    });
   });
 
   var entity = {
@@ -85,13 +90,13 @@ function formatEntity(tenant, env) {
     rel: ['item'],
     properties: {
       tenantId: tenant.tenantId,
-      data: data 
+      data: data
     },
     links: [
       {
         rel: ['self'],
         href: env.helpers.url.path('/tenants/' + tenant.tenantId)
-      }  
+      }
     ]
   };
 
