@@ -52,7 +52,7 @@ Tenant.prototype.list = function(env, next) {
   var custom = false;
 
   if (startDate && !endDate || endDate && !startDate) {
-    env.response.body = 'Must supply startDate and endDate.';
+    env.response.body = 'Must supply startDate and endDate.\n';
     env.response.statusCode = 400;
     return next(env);
   }
@@ -66,7 +66,7 @@ Tenant.prototype.list = function(env, next) {
     endDate = this._processDate(endDate);
     custom = true;
     if (startDate === NaN || endDate === NaN) {
-      env.response.body = 'Invalid date.';
+      env.response.body = 'Invalid date.\n';
       env.response.statusCode = 400;
       return next(env);
     }
@@ -74,6 +74,12 @@ Tenant.prototype.list = function(env, next) {
 
   if(aggregation == 'month') {
     custom = true;
+  }
+
+  if (AGGREGATIONS.indexOf(aggregation) < 0) {
+    env.response.body = 'Aggregation invalid.\n';
+    env.response.statusCode = 400;
+    return next(env);
   }
 
   var stack = process.env.ZETTA_STACK;

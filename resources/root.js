@@ -50,7 +50,7 @@ Root.prototype.root = function(env, next) {
   var custom = false;
 
   if (startDate && !endDate || endDate && !startDate) {
-    env.response.body = 'Must supply startDate and endDate.';
+    env.response.body = 'Must supply startDate and endDate.\n';
     env.response.statusCode = 400;
     return next(env);
   }
@@ -64,7 +64,7 @@ Root.prototype.root = function(env, next) {
     startDate = this._processDate(startDate);
     endDate = this._processDate(endDate);
     if (startDate === NaN || endDate === NaN) {
-      env.response.body = 'Invalid date.';
+      env.response.body = 'Invalid date.\n';
       env.response.statusCode = 400;
       return next(env);
     }
@@ -77,7 +77,7 @@ Root.prototype.root = function(env, next) {
   }
 
   if (AGGREGATIONS.indexOf(aggregation) < 0) {
-    env.response.body = 'Aggregation invalid.';
+    env.response.body = 'Aggregation invalid.\n';
     env.response.statusCode = 400;
     return next(env);
   }
