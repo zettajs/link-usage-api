@@ -4,7 +4,7 @@
   "description": "",
   "main": "influx_basic_client.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha -R spec"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,8 @@
     "argo-formatter-siren": "0.0.0",
     "csv-stringify": "^1.0.4",
     "titan": "^1.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.2"
   }
 }

@@ -91,6 +91,7 @@ Root.prototype.root = function(env, next) {
   var query3 = 'SELECT SUM(total) FROM hub_messages_count WHERE link_stack = \''+stack+'\' AND time >= \''+startDate+'\' AND time <= \''+endDate+'\' GROUP BY \"tenantId\", time(1d) fill(0)';
 
   influxClient.query(this.influxOpts, 'linkusage', [query1, query2, query3], function(err, results) {
+
     var mappings = {};
     mappings.tenants = {};
     mappings.custom = custom;

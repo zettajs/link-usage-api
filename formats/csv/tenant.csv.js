@@ -6,7 +6,10 @@ module.exports = function(model) {
 
   var firstTwoColumns = ['tenant', 'metric'];
   var targets = Object.keys(mappings.targets);
-  var dates = Object.keys(mappings.targets[targets[0]].values);
+  var dates = [];
+  if(targets.length) {
+    dates = Object.keys(mappings.targets[targets[0]].values);
+  }
   var columns = firstTwoColumns.concat(dates);
   var csvData = [columns];
   targets.forEach(function(targetKey){
