@@ -164,6 +164,7 @@ Root.prototype.root = function(env, next) {
     if(acceptHeader == 'text/csv') {
       env.response.setHeader('Content-Type', 'text/csv');
     }
+
     env.format.render('root', {env: env, mappings: mappings});
     env.response.statusCode = 200;
     return next(env);

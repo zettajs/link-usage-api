@@ -89,6 +89,7 @@ Tenant.prototype.list = function(env, next) {
     env.response.statusCode = 404;
     return next(env);
   }
+
   var query1 = 'SELECT SUM(total) FROM hub_http_count WHERE link_stack = \''+stack+'\' AND tenantId=\''+tenantId+'\' AND time >= \''+ startDate +'\' AND time <= \''+ endDate +'\' GROUP BY \"targetName\", time(1d) fill(0)';
 
   var query2 = 'SELECT SUM(total) FROM hub_messages_bytes WHERE link_stack = \''+stack+'\' AND tenantId=\''+tenantId+'\' AND time >= \''+ startDate +'\' AND time <= \''+ endDate +'\' GROUP BY \"targetName\", time(1d) fill(0)';
