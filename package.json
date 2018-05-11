@@ -6,12 +6,8 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha -R spec"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/apigee-internal/apigee-link-usage-api.git"
-  },
-  "author": "",
-  "license": "ISC",
+  "author": "Adam Magaluk <AdamMagaluk@google.com>",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/apigee-internal/apigee-link-usage-api/issues"
   },

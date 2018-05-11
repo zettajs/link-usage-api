@@ -14,6 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/sh
+#!/bin/bash
+set -x
+cd git/link-usage-api
 
-docker build -t zetta/zetta-usage-api .
+node -v
+npm -v
+
+npm install
+npm test
