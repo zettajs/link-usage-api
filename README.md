@@ -8,3 +8,7 @@ generate a HTTP API.
 ```
 npm test
 ```
+
+## Disclaimer
+
+This is not an officially supported Google product.
